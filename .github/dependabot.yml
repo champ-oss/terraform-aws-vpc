@@ -1,0 +1,17 @@
+version: 2
+updates:
+# https://github.com/dependabot/dependabot-core/issues/2178
+  - package-ecosystem: "terraform"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "terraform"
+    directory: "/examples/complete"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "gomod"
+    directory: "/test/src"
+    schedule:
+      interval: "monthly"

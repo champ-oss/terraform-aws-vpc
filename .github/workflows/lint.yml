@@ -1,0 +1,32 @@
+name: lint
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: hashicorp/setup-terraform@v1.3.2 # https://github.com/hashicorp/setup-terraform/releases
+        with:
+          terraform_version: 1.1.4 # https://github.com/hashicorp/terraform/releases
+          terraform_wrapper: false
+
+      - uses: terraform-linters/setup-tflint@v1.1.0
+        name: Setup TFLint
+        with:
+          tflint_version: v0.34.1
+
+      - name: terraform fmt
+        run: terraform fmt -recursive -check
+
+      - name: tflint
+        shell: bash
+        run: |
+          tflint --init
+          TF_DIRS=$(find . -name "*.tf" -not -path "./.git/*" -exec dirname {} \; | sort | uniq)
+          set +e
+          for dir in $TF_DIRS; do tflint $dir || exit 1; done

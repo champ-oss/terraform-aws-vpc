@@ -1,0 +1,46 @@
+name: sonar
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+env:
+  GITHUB_TOKEN: ${{ secrets.gh_token }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  SONAR_ORG: "champ-oss"
+
+jobs:
+  sonar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
+      - name: Create project
+        shell: bash
+        run: | # check if project exist, create project in sonar cloud org.  rename default master branch to main via rest api
+          export getCurrentBranch=`git branch --show-current`
+          export getProject=`echo $GITHUB_REPOSITORY | cut -d '/' -f2`
+          echo "currentBranch=${getCurrentBranch}" >> $GITHUB_ENV
+          echo "sonarProject=${getProject}" >> $GITHUB_ENV
+          http_response=`curl -s -o -w GET "https://${{ secrets.SONAR_TOKEN }}@sonarcloud.io/api/components/search?qualifiers=TRK&&ps=500&organization=${{ env.SONAR_ORG }}" | jq .components | { grep ${getProject}_${{ env.SONAR_ORG }} || true; }`
+          if [ -z "$http_response" ]; then
+              curl -s -o /dev/null -w "%{http_code}" POST https://${{ secrets.SONAR_TOKEN }}@sonarcloud.io/api/projects/create -d "name=${getProject}&project=${getProject}_${{ env.SONAR_ORG }}&organization=${{ env.SONAR_ORG }}"
+              curl -s -o /dev/null -w "%{http_code}" POST https://${{ secrets.SONAR_TOKEN }}@sonarcloud.io/api/project_branches/rename -d "project=${getProject}_${{ env.SONAR_ORG }}&name=main"
+          else
+             echo "no need to create project, project already exist"
+          fi
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: ./
+          args: >
+            -Dsonar.organization=${{ env.SONAR_ORG }}
+            -Dsonar.projectKey=${{ env.sonarProject }}_${{ env.SONAR_ORG }}
+            -Dsonar.branch.name=${{ env.currentBranch }}
+            -Dsonar.exclusions=**/*_test.go
+            -Dsonar.test.inclusions=**/*_test.go
