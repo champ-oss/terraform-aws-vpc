@@ -3,6 +3,8 @@ name: lint
 on:
   workflow_dispatch:
   push:
+    branches-ignore:
+      - main
 
 jobs:
   lint:
@@ -18,7 +20,7 @@ jobs:
       - uses: terraform-linters/setup-tflint@v1.1.0
         name: Setup TFLint
         with:
-          tflint_version: v0.34.1
+          tflint_version: v0.35.0
 
       - name: terraform fmt
         run: terraform fmt -recursive -check
