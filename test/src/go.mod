@@ -1,8 +1,8 @@
-module github.com/champ-oss/terraform-module-template
+module github.com/champtitles/terraform-aws-vpc
 
 go 1.17
 
-require github.com/gruntwork-io/terratest v0.40.7
+require github.com/gruntwork-io/terratest v0.40.2
 
 require (
 	cloud.google.com/go v0.83.0 // indirect
