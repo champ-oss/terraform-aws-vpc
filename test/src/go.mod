@@ -1,4 +1,4 @@
-module github.com/champtitles/terraform-aws-vpc
+module github.com/champ-oss/terraform-aws-vpc
 
 go 1.17
 
