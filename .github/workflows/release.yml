@@ -1,0 +1,24 @@
+name: release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: tag
+        run: |
+          GIT_SHORT_REF=`git rev-parse --short HEAD`
+          GIT_REMOTE_LATEST_TAG=`git ls-remote --tags | sort -t '/' -k 3 -V | awk -F/ '{ print $3 }' | awk '!/\^\{\}/' | tail -n 1 | cut -d '-' -f1`
+          if [[ -n "$GIT_REMOTE_LATEST_TAG" ]]; then
+              BUMP_TAG_PATCH_VERSION=`echo $GIT_REMOTE_LATEST_TAG | ( IFS=".$IFS" ; read a b c && echo $a.$b.$((c + 1)))`
+              git tag "${BUMP_TAG_PATCH_VERSION}-${GIT_SHORT_REF}"
+          else
+              git tag "v1.0.0-${GIT_SHORT_REF}"
+          fi
+          git push origin --tags
