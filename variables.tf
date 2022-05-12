@@ -67,3 +67,9 @@ variable "retention_in_days" {
   type        = number
   default     = 90
 }
+
+variable "create_private_subnets" {
+  description = "If disabled only public subnets will be created"
+  type        = bool
+  default     = true
+}
