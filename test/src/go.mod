@@ -3,7 +3,7 @@ module github.com/champ-oss/terraform-aws-vpc
 go 1.17
 
 require (
-	github.com/gruntwork-io/terratest v0.40.8
+	github.com/gruntwork-io/terratest v0.40.9
 	github.com/stretchr/testify v1.7.1
 )
 
