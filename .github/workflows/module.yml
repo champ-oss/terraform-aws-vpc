@@ -63,7 +63,7 @@ jobs:
           export TF_VAR_branch=$(git branch --show-current)
           export PULL_REQUEST_HEAD_SHA=${{ github.event.pull_request.head.sha }}
           go mod download
-          go test -v -run ${{ matrix.testcase }}
+          go test -v -timeout 90m -run ${{ matrix.testcase }}
 
   module:
     runs-on: ubuntu-latest
