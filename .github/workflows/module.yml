@@ -27,8 +27,22 @@ defaults:
     working-directory: test/src
 
 jobs:
-  module:
+  list-tests:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-matrix
+        run: echo "::set-output name=matrix::$(go test -list Test | grep -v " " | jq -Rsc '. / "\n" - [""]')"
+
+  run-test:
+    needs: list-tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        testcase: ${{fromJSON(needs.list-tests.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v2
 
@@ -49,14 +63,11 @@ jobs:
           export TF_VAR_branch=$(git branch --show-current)
           export PULL_REQUEST_HEAD_SHA=${{ github.event.pull_request.head.sha }}
           go mod download
-          go install gotest.tools/gotestsum@latest
-          set -o pipefail
-          gotestsum --format standard-verbose --junitfile report.xml -- -p 1 -timeout 90m | tee test_output.log | grep -v "   "
+          go test -v -run ${{ matrix.testcase }}
 
-      - name: Terratest Verbose Logs
-        if: always()
-        run: |
-          curl --location --silent --fail --show-error -o terratest_log_parser https://github.com/gruntwork-io/terratest/releases/download/v0.40.6/terratest_log_parser_linux_amd64
-          chmod +x terratest_log_parser
-          ./terratest_log_parser -testlog test_output.log -outputdir test_output
-          cat test_output/*.log
+  module:
+    runs-on: ubuntu-latest
+    needs: run-test
+    steps:
+    - run: echo Done!
+      working-directory: .
