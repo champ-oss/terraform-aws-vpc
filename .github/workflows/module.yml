@@ -20,6 +20,9 @@ env:
   MONGODB_ATLAS_PUBLIC_KEY: ${{ secrets.MONGODB_ATLAS_PUBLIC_KEY }}
   MONGODB_ATLAS_ORG: ${{ secrets.MONGODB_ATLAS_ORG }}
   SLACK_URL: ${{ secrets.SLACK_URL }}
+  NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
+  NEW_RELIC_REGION: ${{ secrets.NEW_RELIC_REGION }}
+  NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
 
 defaults:
   run:
