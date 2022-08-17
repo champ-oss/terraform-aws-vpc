@@ -1,5 +1,6 @@
 name: Generate terraform docs
 on:
+  push:
   pull_request:
     branches-ignore:
     - file-sync
