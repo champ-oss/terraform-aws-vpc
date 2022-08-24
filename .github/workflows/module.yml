@@ -38,6 +38,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v2
+      - run: go mod download
       - id: set-matrix
         run: echo "::set-output name=matrix::$(go test -list Test | grep -v " " | jq -Rsc '. / "\n" - [""]')"
 
