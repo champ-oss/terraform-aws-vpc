@@ -1,5 +1,6 @@
 resource "aws_eip" "this" {
   count = var.create_private_subnets ? var.availability_zones_count : 0
+  vpc   = true
   tags  = merge({ Name : "${var.git}-nat-${count.index}" }, { Type : "NAT" }, local.tags, var.tags)
 }
 
