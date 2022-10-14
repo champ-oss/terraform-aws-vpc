@@ -109,3 +109,22 @@ jobs:
             echo "tests failed"
             exit 1
           fi
+
+  github-issue-notification:
+    needs: [ module ]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: set-env-info
+        run: |
+          echo "GIT_REPO=$(echo ${GITHUB_REPOSITORY} | sed -e 's|.*/||')" >> $GITHUB_ENV
+          echo "GITHUB_WORKFLOW_NAME=$(echo ${GITHUB_WORKFLOW} | sed -e 's|.*/||')" >> $GITHUB_ENV
+          echo "GITHUB_REF_NAME=$(echo ${GITHUB_REF_NAME})" >> $GITHUB_ENV
+      - name: github-issue-notification
+        uses: champ-oss/action-github-issue-notification@v1.0.0-421559f
+        with:
+          GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
+          GITHUB_ORG: champ-oss
+          GITHUB_REPO: ${{ env.GIT_REPO }}
+          GITHUB_CUSTOM_LABEL: ${{ env.GITHUB_WORKFLOW_NAME }}
+          GITHUB_BRANCH_LABEL: ${{ env.GITHUB_REF_NAME }}
