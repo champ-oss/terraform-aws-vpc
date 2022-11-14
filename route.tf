@@ -11,7 +11,7 @@ resource "aws_route" "public" {
 
 resource "aws_route_table_association" "public" {
   count          = var.availability_zones_count
-  subnet_id      = element(aws_subnet.public.*.id, count.index)
+  subnet_id      = element(aws_subnet.public[*].id, count.index)
   route_table_id = aws_route_table.public.id
 }
 
@@ -23,13 +23,13 @@ resource "aws_route_table" "private" {
 
 resource "aws_route" "private" {
   count                  = var.create_private_subnets ? var.availability_zones_count : 0
-  route_table_id         = element(aws_route_table.private.*.id, count.index)
+  route_table_id         = element(aws_route_table.private[*].id, count.index)
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = element(aws_nat_gateway.this.*.id, count.index)
+  nat_gateway_id         = element(aws_nat_gateway.this[*].id, count.index)
 }
 
 resource "aws_route_table_association" "private" {
   count          = var.create_private_subnets ? var.availability_zones_count : 0
-  subnet_id      = element(aws_subnet.private.*.id, count.index)
-  route_table_id = element(aws_route_table.private.*.id, count.index)
+  subnet_id      = element(aws_subnet.private[*].id, count.index)
+  route_table_id = element(aws_route_table.private[*].id, count.index)
 }

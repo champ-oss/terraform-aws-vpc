@@ -6,7 +6,7 @@ resource "aws_eip" "this" {
 
 resource "aws_nat_gateway" "this" {
   count         = var.create_private_subnets ? var.availability_zones_count : 0
-  allocation_id = element(aws_eip.this.*.id, count.index)
-  subnet_id     = element(aws_subnet.public.*.id, count.index)
+  allocation_id = element(aws_eip.this[*].id, count.index)
+  subnet_id     = element(aws_subnet.public[*].id, count.index)
   tags          = merge({ Name : "${var.git}-${count.index}" }, local.tags, var.tags)
 }
