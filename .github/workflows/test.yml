@@ -1,0 +1,43 @@
+name: module
+
+on:
+  workflow_dispatch:
+  push:
+  schedule:
+    - cron: "0 7 * * *"
+
+env:
+  TF_INPUT: false
+  TF_IN_AUTOMATION: true
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  MONGODB_ATLAS_PRIVATE_KEY: ${{ secrets.MONGODB_ATLAS_PRIVATE_KEY }}
+  MONGODB_ATLAS_PUBLIC_KEY: ${{ secrets.MONGODB_ATLAS_PUBLIC_KEY }}
+  MONGODB_ATLAS_ORG: ${{ secrets.MONGODB_ATLAS_ORG }}
+  SLACK_URL: ${{ secrets.SLACK_URL }}
+  NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
+  NEW_RELIC_REGION: ${{ secrets.NEW_RELIC_REGION }}
+  NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+
+jobs:
+  module:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v1.3.2 # https://github.com/hashicorp/setup-terraform/releases
+        with:
+          terraform_version: 1.1.4 # https://github.com/hashicorp/terraform/releases
+          terraform_wrapper: false
+      - name: init
+        run: terraform init
+      - name: validate
+        run: terraform validate
+      - name: plan
+        run: terraform plan -out=tfplan
+      - name: apply
+        run: terraform apply -auto-approve tfplan
+      - name: check
+        run: terraform plan -detailed-exitcode
+      - name: destroy
+        run: terraform destroy -auto-approve
