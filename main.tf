@@ -4,7 +4,7 @@ data "aws_availability_zones" "this" {}
 
 locals {
   tags = {
-    git       = var.git
+    git       = var.name
     cost      = "shared"
     creator   = "terraform"
     component = "vpc"

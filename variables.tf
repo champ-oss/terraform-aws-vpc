@@ -1,6 +1,7 @@
-variable "git" {
-  description = "Name of the Git repo"
+variable "name" {
+  description = "Used to label all resources"
   type        = string
+  default     = "default"
 }
 
 variable "tags" {

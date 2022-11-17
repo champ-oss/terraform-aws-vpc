@@ -1,5 +1,5 @@
 resource "aws_iam_role" "this" {
-  name_prefix        = "${var.git}-vpc-flow-logs-"
+  name_prefix        = "${var.name}-vpc-flow-logs-"
   assume_role_policy = data.aws_iam_policy_document.assume.json
   tags               = merge(local.tags, var.tags)
 }
@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "assume" {
 }
 
 resource "aws_iam_role_policy" "this" {
-  name_prefix = "${var.git}-vpc-flow-logs-"
+  name_prefix = "${var.name}-vpc-flow-logs-"
   role        = aws_iam_role.this.id
   policy      = data.aws_iam_policy_document.this.json
 }
