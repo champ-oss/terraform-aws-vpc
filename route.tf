@@ -1,6 +1,6 @@
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
-  tags   = merge({ Name : "${var.git}-public" }, { Type : "Public" }, local.tags, var.tags)
+  tags   = merge({ Name : "${var.name}-public" }, { Type : "Public" }, local.tags, var.tags)
 }
 
 resource "aws_route" "public" {
@@ -18,7 +18,7 @@ resource "aws_route_table_association" "public" {
 resource "aws_route_table" "private" {
   count  = var.create_private_subnets ? var.availability_zones_count : 0
   vpc_id = aws_vpc.this.id
-  tags   = merge({ Name : "${var.git}-private-${count.index}" }, { Type : "Private" }, local.tags, var.tags)
+  tags   = merge({ Name : "${var.name}-private-${count.index}" }, { Type : "Private" }, local.tags, var.tags)
 }
 
 resource "aws_route" "private" {
