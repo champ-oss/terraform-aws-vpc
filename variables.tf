@@ -74,3 +74,15 @@ variable "create_private_subnets" {
   type        = bool
   default     = true
 }
+
+variable "shared" {
+  description = "Creates SSM parameters to enable discovery as a shared resource"
+  type        = bool
+  default     = false
+}
+
+variable "discovery_path" {
+  description = "SSM path used to discover shared resources"
+  type        = string
+  default     = "/default/vpc"
+}
