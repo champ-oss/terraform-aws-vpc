@@ -6,6 +6,8 @@ on:
   schedule:
     - cron: "0 7 * * *"
 
+concurrency: this
+
 env:
   TF_INPUT: false
   TF_IN_AUTOMATION: true
