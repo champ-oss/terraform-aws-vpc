@@ -1,6 +1,6 @@
 resource "aws_ssm_parameter" "this" {
   count = var.shared ? 1 : 0
-  name  = "${var.discovery_path}/${aws_vpc.this[0].id}"
+  name  = "${var.discovery_path}/${local.vpc_id}"
   type  = "String"
-  value = aws_vpc.this[0].id
+  value = local.vpc_id
 }

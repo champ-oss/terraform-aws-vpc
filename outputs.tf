@@ -1,6 +1,6 @@
 output "vpc_id" {
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc#id"
-  value       = local.discovered ? null : aws_vpc.this[0].id
+  value       = local.vpc_id
 }
 
 output "cidr_block" {
