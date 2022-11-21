@@ -1,11 +1,11 @@
 output "vpc_id" {
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc#id"
-  value       = aws_vpc.this.id
+  value       = aws_vpc.this[0].id
 }
 
 output "cidr_block" {
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc#cidr_block"
-  value       = aws_vpc.this.cidr_block
+  value       = aws_vpc.this[0].cidr_block
 }
 
 output "all_subnets_ids" {
@@ -25,12 +25,12 @@ output "private_subnets_ids" {
 
 output "all_route_table_ids" {
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table#id"
-  value       = flatten([aws_route_table.public.id, aws_route_table.private[*].id])
+  value       = flatten([aws_route_table.public[0].id, aws_route_table.private[*].id])
 }
 
 output "public_route_table_id" {
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table#id"
-  value       = aws_route_table.public.id
+  value       = aws_route_table.public[0].id
 }
 
 output "private_route_table_ids" {

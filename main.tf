@@ -1,8 +1,6 @@
-data "aws_region" "this" {}
-
-data "aws_availability_zones" "this" {}
-
 locals {
+  discovered = length(data.aws_ssm_parameters_by_path.this.names) == 1
+
   tags = {
     git       = var.name
     cost      = "shared"
