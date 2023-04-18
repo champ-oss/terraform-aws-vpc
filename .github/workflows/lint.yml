@@ -23,7 +23,7 @@ jobs:
           tflint_version: v0.42.2 # https://github.com/terraform-linters/tflint/releases
 
       - name: terraform fmt
-        run: terraform fmt -recursive -check
+        run: terraform fmt -recursive -check -diff
 
       - name: tflint
         shell: bash
