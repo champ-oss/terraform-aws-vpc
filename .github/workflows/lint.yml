@@ -28,7 +28,7 @@ jobs:
       - name: tflint
         shell: bash
         run: |
-          tflint --init
+          for i in 1 2 3; do tflint --init && break || sleep 15; done
           TF_DIRS=$(find . -name "*.tf" -not -path "./.git/*" -exec dirname {} \; | sort | uniq)
           set +e
           for dir in $TF_DIRS; do tflint $dir || exit 1; done
