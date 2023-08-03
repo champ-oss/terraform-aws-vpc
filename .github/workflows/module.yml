@@ -1,0 +1,130 @@
+name: module
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+    paths-ignore:
+      - 'README.md'
+  schedule:
+    - cron: "0 7 * * *"
+
+concurrency: this
+
+env:
+  TF_INPUT: false
+  TF_IN_AUTOMATION: true
+  TF_STATE_BUCKET: "env-tfbackend-oss-backend"
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  MONGODB_ATLAS_PRIVATE_KEY: ${{ secrets.MONGODB_ATLAS_PRIVATE_KEY }}
+  MONGODB_ATLAS_PUBLIC_KEY: ${{ secrets.MONGODB_ATLAS_PUBLIC_KEY }}
+  MONGODB_ATLAS_ORG: ${{ secrets.MONGODB_ATLAS_ORG }}
+  SLACK_URL: ${{ secrets.SLACK_URL }}
+  NEW_RELIC_API_KEY: ${{ secrets.NEW_RELIC_API_KEY }}
+  NEW_RELIC_REGION: ${{ secrets.NEW_RELIC_REGION }}
+  NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+
+defaults:
+  run:
+    shell: bash
+    working-directory: test/src
+
+jobs:
+  list-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+      - run: go mod download
+      - id: set-matrix
+        run: |
+          TESTS=$(go test -list Test | grep -v " " | jq -Rsc '. / "\n" - [""]')
+          echo $TESTS
+          echo "TESTS=$TESTS" >> $GITHUB_OUTPUT
+    outputs:
+      TESTS: ${{ steps.set-matrix.outputs.TESTS }}
+  run-test:
+    needs: list-tests
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        TESTS: ${{ fromJson(needs.list-tests.outputs.TESTS) }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+      - uses: hashicorp/setup-terraform@v2.0.3 # https://github.com/hashicorp/setup-terraform/releases
+        with:
+          terraform_version: 1.3.5 # https://github.com/hashicorp/terraform/releases
+          terraform_wrapper: false
+      - uses: actions/setup-go@v4
+        with:
+          go-version: 1.17
+      - name: Terratest
+        run: |
+          export TF_INPUT=${TF_INPUT:-false}
+          export TF_IN_AUTOMATION=${TF_IN_AUTOMATION:-true}
+          export TF_VAR_git=`echo ${GITHUB_REPOSITORY} | sed -e 's|.*/||'`
+          export TF_VAR_branch=$(git branch --show-current)
+          export PULL_REQUEST_HEAD_SHA=${{ github.event.pull_request.head.sha }}
+          go mod download
+          go test -v -timeout 90m -run ${{ matrix.TESTS }}
+  check-tests:
+    needs: run-test
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - id: setoutput
+        working-directory: .
+        run: echo "SUCCESS=true" >> $GITHUB_OUTPUT
+    outputs:
+      SUCCESS: ${{ steps.setoutput.outputs.SUCCESS }}
+  module:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [run-test, check-tests]
+    steps:
+      - name: module
+        working-directory: .
+        run: |
+          passed="${{ needs.check-tests.outputs.SUCCESS }}"
+          if [[ $passed == "true" ]]; then
+            echo "tests passed"
+            exit 0
+          else
+            echo "tests failed"
+            exit 1
+          fi
+  github-issue-notification:
+    needs: [ module ]
+    if: failure() && github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: set-env-info
+        run: |
+          echo "GIT_REPO=$(echo ${GITHUB_REPOSITORY} | sed -e 's|.*/||')" >> $GITHUB_ENV
+          echo "GITHUB_WORKFLOW_NAME=$(echo ${GITHUB_WORKFLOW} | sed -e 's|.*/||')" >> $GITHUB_ENV
+          echo "GITHUB_REF_NAME=$(echo ${GITHUB_REF_NAME})" >> $GITHUB_ENV
+      - name: github-issue-notification
+        uses: champ-oss/action-github-issue-notification@v1.0.0-421559f
+        with:
+          GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
+          GITHUB_ORG: champ-oss
+          GITHUB_REPO: ${{ env.GIT_REPO }}
+          GITHUB_CUSTOM_LABEL: ${{ env.GITHUB_WORKFLOW_NAME }}
+          GITHUB_BRANCH_LABEL: ${{ env.GITHUB_REF_NAME }}
