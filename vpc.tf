@@ -5,7 +5,7 @@ resource "aws_vpc" "this" {
   cidr_block           = var.ipv4_ipam_pool_id == null ? "${var.cidr_block}/${var.cidr_size}" : null
   enable_dns_support   = true
   enable_dns_hostnames = true
-  ipv4_ipam_pool_id    = var.ipv4_ipam_pool_id
+  ipv4_ipam_pool_id    = var.enable_discover_ipam ? data.aws_vpc_ipam_pool.this[0].id : var.ipv4_ipam_pool_id
   ipv4_netmask_length  = var.ipv4_netmask_length
   tags                 = merge({ Name : var.name }, local.tags, var.tags)
 }

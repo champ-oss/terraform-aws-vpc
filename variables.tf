@@ -98,3 +98,15 @@ variable "ipv4_netmask_length" {
   type        = string
   default     = null
 }
+
+variable "enable_discover_ipam" {
+  description = "Use data resource to discover IPAM pool"
+  type        = bool
+  default     = false
+}
+
+variable "ipam_search_description" {
+  description = "IPAM pool description to search"
+  type        = string
+  default     = "*"
+}
