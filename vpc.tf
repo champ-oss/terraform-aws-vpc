@@ -1,8 +1,12 @@
+# tflint-ignore: terraform_comment_syntax
+//noinspection ConflictingProperties
 resource "aws_vpc" "this" {
   count                = local.discovered ? 0 : 1
-  cidr_block           = "${var.cidr_block}/${var.cidr_size}"
+  cidr_block           = var.ipv4_ipam_pool_id == null ? "${var.cidr_block}/${var.cidr_size}" : null
   enable_dns_support   = true
   enable_dns_hostnames = true
+  ipv4_ipam_pool_id    = var.ipv4_ipam_pool_id
+  ipv4_netmask_length  = var.ipv4_netmask_length
   tags                 = merge({ Name : var.name }, local.tags, var.tags)
 }
 

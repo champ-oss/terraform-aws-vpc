@@ -86,3 +86,15 @@ variable "discovery_path" {
   type        = string
   default     = "/default/vpc"
 }
+
+variable "ipv4_ipam_pool_id" {
+  description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc#ipv4_ipam_pool_id"
+  type        = string
+  default     = null
+}
+
+variable "ipv4_netmask_length" {
+  description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc#ipv4_netmask_length"
+  type        = string
+  default     = null
+}
