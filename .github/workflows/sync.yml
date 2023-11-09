@@ -28,4 +28,5 @@ jobs:
             .github/workflows/release.yml
             .github/workflows/sonar.yml
             .github/workflows/sync.yml
-            .github/workflows/combine-prs.yml
+            .github/workflows/doc.yml
+            examples/complete/.terraform.lock.hcl
