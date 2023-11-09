@@ -4,19 +4,14 @@ updates:
   - package-ecosystem: "terraform"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"
 
   - package-ecosystem: "terraform"
     directory: "/examples/complete"
     schedule:
-      interval: "daily"
-
-  - package-ecosystem: "gomod"
-    directory: "/test/src"
-    schedule:
-      interval: "daily"
+      interval: "monthly"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "monthly"

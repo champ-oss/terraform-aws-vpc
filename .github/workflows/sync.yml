@@ -9,7 +9,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.ACTION_TOKEN }}
 
@@ -28,4 +28,5 @@ jobs:
             .github/workflows/release.yml
             .github/workflows/sonar.yml
             .github/workflows/sync.yml
-            .github/workflows/combine-prs.yml
+            .github/workflows/doc.yml
+            examples/complete/.terraform.lock.hcl
