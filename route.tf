@@ -27,7 +27,8 @@ resource "aws_route" "private" {
   count                  = var.create_private_subnets && !local.discovered ? var.availability_zones_count : 0
   route_table_id         = element(aws_route_table.private[*].id, count.index)
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = element(aws_nat_gateway.this[*].id, count.index)
+  nat_gateway_id         = var.enable_transit_gateway_default_routing ? null : element(aws_nat_gateway.this[*].id, count.index)
+  transit_gateway_id     = var.enable_transit_gateway_default_routing ? var.transit_gateway_id : null
 }
 
 resource "aws_route_table_association" "private" {

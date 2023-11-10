@@ -122,3 +122,9 @@ variable "transit_gateway_id" {
   type        = string
   default     = null
 }
+
+variable "enable_transit_gateway_default_routing" {
+  description = "Route all traffic from private subnets to Transit Gateway"
+  type        = bool
+  default     = false
+}
