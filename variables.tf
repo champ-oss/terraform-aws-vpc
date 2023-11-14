@@ -110,3 +110,21 @@ variable "ipam_search_description" {
   type        = string
   default     = "*"
 }
+
+variable "enable_transit_gateway_attachment" {
+  description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway_vpc_attachment"
+  type        = bool
+  default     = false
+}
+
+variable "transit_gateway_id" {
+  description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway_vpc_attachment#transit_gateway_id"
+  type        = string
+  default     = null
+}
+
+variable "enable_transit_gateway_default_routing" {
+  description = "Route all traffic from private subnets to Transit Gateway"
+  type        = bool
+  default     = false
+}
