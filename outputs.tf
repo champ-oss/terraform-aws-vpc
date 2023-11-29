@@ -72,8 +72,3 @@ output "nat_public_ips" {
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip#public_ip"
   value       = aws_eip.this[*].public_ip
 }
-
-output "transit_gateway_vpc_attachment_id" {
-  description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_transit_gateway_vpc_attachment"
-  value       = var.enable_transit_gateway_attachment && !local.discovered ? aws_ec2_transit_gateway_vpc_attachment.this[0].id : null
-}
