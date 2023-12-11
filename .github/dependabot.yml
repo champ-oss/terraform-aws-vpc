@@ -1,17 +1,18 @@
 version: 2
 updates:
-# https://github.com/dependabot/dependabot-core/issues/2178
-  - package-ecosystem: "terraform"
+  - package-ecosystem: "bundler"
     directory: "/"
     schedule:
-      interval: "monthly"
-
-  - package-ecosystem: "terraform"
+      interval: monthly
+    groups:
+      dependabot:
+        patterns:
+          - "*"
+  - package-ecosystem: "bundler"
     directory: "/examples/complete"
     schedule:
-      interval: "monthly"
-
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "monthly"
+      interval: monthly
+    groups:
+      dependabot:
+        patterns:
+          - "*"
