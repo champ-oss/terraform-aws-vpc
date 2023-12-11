@@ -1,18 +1,91 @@
 version: 2
 updates:
-  - package-ecosystem: "bundler"
+  - package-ecosystem: "terraform"
     directory: "/"
     schedule:
-      interval: monthly
+      interval: "monthly"
     groups:
-      dependabot:
+      terraform:
         patterns:
           - "*"
-  - package-ecosystem: "bundler"
+
+  - package-ecosystem: "terraform"
+    directory: "/terraform"
+    schedule:
+      interval: "monthly"
+    groups:
+      terraform:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "terraform"
     directory: "/examples/complete"
     schedule:
-      interval: monthly
+      interval: "monthly"
     groups:
-      dependabot:
+      terraform:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "gomod"
+    directory: "/test/src"
+    schedule:
+      interval: "monthly"
+    groups:
+      gomod:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "gomod"
+    directory: "/src"
+    schedule:
+      interval: "monthly"
+    groups:
+      gomod:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "gomod"
+    directory: "/terraform/test"
+    schedule:
+      interval: "monthly"
+    groups:
+      gomod:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "pip"
+    directory: "/src"
+    schedule:
+      interval: "monthly"
+    groups:
+      pip:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      pip:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      maven:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      github-actions:
         patterns:
           - "*"
