@@ -46,6 +46,15 @@ updates:
           - "*"
 
   - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    groups:
+      gomod:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "gomod"
     directory: "/terraform/test"
     schedule:
       interval: "monthly"
