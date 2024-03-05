@@ -96,32 +96,13 @@ jobs:
       - name: destroy
         if: always()
         run: terraform destroy -auto-approve
-  check-examples:
-    needs: run-example
-    runs-on: ubuntu-latest
-    if: success()
-    steps:
-      - id: setoutput
-        working-directory: .
-        run: echo "SUCCESS=true" >> $GITHUB_OUTPUT
-    outputs:
-      SUCCESS: ${{ steps.setoutput.outputs.SUCCESS }}
   module:
+    if: ${{ always() }}
     runs-on: ubuntu-latest
-    if: always()
-    needs: [run-example, check-examples]
+    needs: [run-example]
     steps:
-      - name: module
-        working-directory: .
-        run: |
-          passed="${{ needs.check-examples.outputs.SUCCESS }}"
-          if [[ $passed == "true" ]]; then
-            echo "tests passed"
-            exit 0
-          else
-            echo "tests failed"
-            exit 1
-          fi
+      - run: exit 1
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}
   github-issue-notification:
     needs: [ module ]
     if: failure() && github.ref_name == 'main'
