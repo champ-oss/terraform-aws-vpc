@@ -65,7 +65,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
-      - uses: hashicorp/setup-terraform@v3.1.0 # https://github.com/hashicorp/setup-terraform/releases
+      - uses: hashicorp/setup-terraform@v3 # https://github.com/hashicorp/setup-terraform/releases
         with:
           terraform_version: 1.6.2 # https://github.com/hashicorp/terraform/releases
           terraform_wrapper: false
@@ -116,7 +116,7 @@ jobs:
           echo "GITHUB_WORKFLOW_NAME=$(echo ${GITHUB_WORKFLOW} | sed -e 's|.*/||')" >> $GITHUB_ENV
           echo "GITHUB_REF_NAME=$(echo ${GITHUB_REF_NAME})" >> $GITHUB_ENV
       - name: github-issue-notification
-        uses: champ-oss/action-github-issue-notification@v1.0.1-1ca0cac
+        uses: champ-oss/action-github-issue-notification@main
         with:
           GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
           GITHUB_ORG: champ-oss
