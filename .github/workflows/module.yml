@@ -67,7 +67,7 @@ jobs:
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
       - uses: hashicorp/setup-terraform@v3 # https://github.com/hashicorp/setup-terraform/releases
         with:
-          terraform_version: 1.6.2 # https://github.com/hashicorp/terraform/releases
+          terraform_version: 1.10.5 # https://github.com/hashicorp/terraform/releases
           terraform_wrapper: false
       - name: copy lockfile
         run: cp ../complete/.terraform.lock.hcl . || true
