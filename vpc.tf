@@ -12,7 +12,7 @@ resource "aws_vpc" "this" {
 
 resource "aws_vpc_dhcp_options" "this" {
   count               = 1
-  domain_name         = "${data.aws_region.this.name}.compute.internal"
+  domain_name         = "${data.aws_region.this.region}.compute.internal"
   domain_name_servers = ["AmazonProvidedDNS"]
   tags                = merge({ Name : var.name }, local.tags, var.tags)
 }
